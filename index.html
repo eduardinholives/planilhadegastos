@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planilha de Gastos - Microempresa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: red; /* Alterado para vermelho */
+        }
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            width: 48%;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .big-btn {           
+            width: 100%;
+            background-color: #28a745;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .big-btn:hover {
+            background-color: #218838;}
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .form-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .form-group input {
+            padding: 8px;
+            width: 100%;
+        }
+        .add-btn, .download-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .download-btn {
+            background-color: #28a745;
+        }
+        .total-sum {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Planilha de Gastos</h1>
+
+        <!-- Formulário para adicionar novos gastos -->
+        <div class="form-group">
+            <input type="date" id="date" placeholder="Data" required>
+            <input type="text" id="description" placeholder="Descrição" required>
+            <input type="number" id="value" placeholder="Valor (R$)" required>
+            <button id="add-btn" class="add-btn">Adicionar Gasto</button>
+        </div>
+
+        <!-- Tabela de gastos -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Descrição</th>
+                    <th>Valor (R$)</th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+                <!-- Linhas adicionadas aparecerão aqui -->
+            </tbody>
+        </table>
+
+        <!-- Exibir o total dos gastos -->
+        <div class="total-sum" id="total-sum">Total: R$ 0,00</div>
+
+        <!-- Botões de Ajuda e Ganhos -->
+        <div class="btn-group">
+            <a href="ajuda.html" class="btn">Ajuda para Preencher</a>
+            <button id="download-btn" class="btn download-btn">Baixar PDF</button>
+        </div>
+
+        <!-- Botão para ir à Planilha de Ganhos -->
+        <a href="ganhos.html" class="btn big-btn">Ir para a Planilha de Ganhos</a>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <script>
+        let total = 0; // Variável para armazenar o total dos gastos
+
+        // Função para adicionar uma nova linha à tabela de gastos
+        document.getElementById('add-btn').addEventListener('click', function () {
+            const date = document.getElementById('date').value;
+            const description = document.getElementById('description').value;
+            const value = document.getElementById('value').value;
+
+            if (date && description && value) {
+                const tableBody = document.getElementById('table-body');
+                const newRow = document.createElement('tr');
+
+                // Cria células para Data, Descrição e Valor
+                const dateCell = document.createElement('td');
+                dateCell.textContent = date;
+
+                const descriptionCell = document.createElement('td');
+                descriptionCell.textContent = description;
+
+                const valueCell = document.createElement('td');
+                valueCell.textContent = parseFloat(value).toFixed(2); // Formata o valor com 2 casas decimais
+
+                // Adiciona as células à nova linha
+                newRow.appendChild(dateCell);
+                newRow.appendChild(descriptionCell);
+                newRow.appendChild(valueCell);
+
+                // Adiciona a nova linha à tabela
+                tableBody.appendChild(newRow);
+
+                // Atualiza o total
+                total += parseFloat(value);
+                document.getElementById('total-sum').textContent = `Total: R$ ${total.toFixed(2)}`;
+
+                // Limpa os campos do formulário
+                document.getElementById('date').value = '';
+                document.getElementById('description').value = '';
+                document.getElementById('value').value = '';
+            } else {
+                alert('Por favor, preencha todos os campos antes de adicionar um gasto.');
+            }
+        });
+
+        // Função para baixar o PDF com os gastos
+        document.getElementById('download-btn').addEventListener('click', function () {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Adiciona título ao PDF
+            doc.text("Planilha de Gastos", 20, 10);
+
+            // Adiciona o conteúdo da tabela ao PDF
+            doc.autoTable({
+                head: [['Data', 'Descrição', 'Valor (R$)']],
+                body: Array.from(document.querySelectorAll('#table-body tr')).map(row => 
+                    Array.from(row.cells).map(cell => cell.textContent)
+                )
+            });
+
+            // Adiciona o total ao PDF
+            doc.text(`Total: R$ ${total.toFixed(2)}`, 20, doc.previousAutoTable.finalY + 10);
+
+            // Baixa o PDF
+            doc.save('planilha_gastos.pdf');
+        });
+    </script>
+</body>
+</html>
