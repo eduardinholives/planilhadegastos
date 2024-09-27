@@ -20,7 +20,35 @@
         }
         h1 {
             text-align: center;
-            color: #007bff;
+            color: #28a745
+        }
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            width: 48%;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .big-btn {
+            width: 100%;
+            background-color: red; /* Alterado para vermelho */
+            margin-top: 20px;
+            text-align: center;
+        }
+        .big-btn:hover {
+            background-color: darkred; /* Tom mais escuro no hover */
         }
         table {
             width: 100%;
@@ -49,14 +77,20 @@
         .add-btn, .download-btn {
             display: inline-block;
             padding: 10px 20px;
-            background-color: #28a745;
+            background-color: #007bff;
             color: #fff;
             border: none;
             cursor: pointer;
             text-decoration: none;
         }
-        .add-btn {
-            background-color: #007bff;
+        .download-btn {
+            background-color: #28a745;
+        }
+        .total-sum {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: right;
         }
     </style>
 </head>
@@ -86,12 +120,24 @@
             </tbody>
         </table>
 
-        <button id="download-btn" class="download-btn">Baixar PDF</button>
+        <!-- Exibir o total dos ganhos -->
+        <div class="total-sum" id="total-sum">Total: R$ 0,00</div>
+
+        <!-- Botões de Ajuda e Gastos -->
+        <div class="btn-group">
+            <a href="ajuda.html" class="btn">Ajuda para Preencher</a>
+            <button id="download-btn" class="btn download-btn">Baixar PDF</button>
+        </div>
+
+        <!-- Botão para ir à Planilha de Gastos -->
+        <a href="pagina.html" class="btn big-btn">Ir para a Planilha de Gastos</a>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <script>
+        let total = 0; // Variável para armazenar o total dos ganhos
+
         // Função para adicionar uma nova linha à tabela de ganhos
         document.getElementById('add-btn').addEventListener('click', function () {
             const date = document.getElementById('date').value;
@@ -120,6 +166,10 @@
                 // Adiciona a nova linha à tabela
                 tableBody.appendChild(newRow);
 
+                // Atualiza o total
+                total += parseFloat(value);
+                document.getElementById('total-sum').textContent = `Total: R$ ${total.toFixed(2)}`;
+
                 // Limpa os campos do formulário
                 document.getElementById('date').value = '';
                 document.getElementById('description').value = '';
@@ -144,6 +194,9 @@
                     Array.from(row.cells).map(cell => cell.textContent)
                 )
             });
+
+            // Adiciona o total ao PDF
+            doc.text(`Total: R$ ${total.toFixed(2)}`, 20, doc.previousAutoTable.finalY + 10);
 
             // Baixa o PDF
             doc.save('planilha_ganhos.pdf');
