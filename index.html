@@ -1,205 +1,346 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planilha de Gastos - Microempresa</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            text-align: center;
-            color: red; /* Alterado para vermelho */
-        }
-        .btn-group {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-        .btn {
-            display: inline-block;
-            padding: 15px;
-            font-size: 16px;
-            background-color: #007bff;
-            color: #fff;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 5px;
-            width: 48%;
-        }
-        .btn:hover {
-            background-color: #0056b3;
-        }
-        .big-btn {           
-            width: 100%;
-            background-color: #28a745;
-            margin-top: 20px;
-            text-align: center;
-        }
-        .big-btn:hover {
-            background-color: #218838;}
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 8px;
-            text-align: center;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .form-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .form-group input {
-            padding: 8px;
-            width: 100%;
-        }
-        .add-btn, .download-btn {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        .download-btn {
-            background-color: #28a745;
-        }
-        .total-sum {
-            margin-top: 20px;
-            font-size: 18px;
-            font-weight: bold;
-            text-align: right;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planilha de Despesas</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+  <style>
+    :root {
+      --bg-primary: #f8f9fa;
+      --bg-secondary: #ffffff;
+      --text-primary: #212529;
+      --text-secondary: #6c757d;
+      --border-color: #dee2e6;
+      --card-bg: #ffffff;
+      --table-striped: rgba(0,0,0,.05);
+    }
+
+    .dark-mode {
+      --bg-primary: #121212;
+      --bg-secondary: #1e1e1e;
+      --text-primary: #e0e0e0;
+      --text-secondary: #a0a0a0;
+      --border-color: #444;
+      --card-bg: #2d2d2d;
+      --table-striped: rgba(255,255,255,.05);
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .bg-white {
+      background-color: var(--bg-secondary) !important;
+    }
+
+    .table {
+      color: var(--text-primary);
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+      background-color: var(--table-striped);
+    }
+
+    .table-hover tbody tr:hover {
+      background-color: rgba(0,0,0,0.075);
+    }
+
+    .dark-mode .table-hover tbody tr:hover {
+      background-color: rgba(255,255,255,0.075);
+    }
+
+    .form-control, .form-select {
+      background-color: var(--card-bg);
+      color: var(--text-primary);
+      border-color: var(--border-color);
+    }
+
+    .form-control:focus, .form-select:focus {
+      background-color: var(--card-bg);
+      color: var(--text-primary);
+      border-color: #86b7fe;
+      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border-color: var(--border-color);
+    }
+
+    .alert {
+      background-color: var(--card-bg);
+      border-color: var(--border-color);
+    }
+
+    .canvas-container {
+      background-color: var(--card-bg);
+      border-color: var(--border-color);
+    }
+
+    .nav-tabs .nav-link {
+      color: var(--text-primary);
+    }
+
+    .nav-tabs .nav-link.active {
+      background-color: var(--card-bg);
+      border-color: var(--border-color) var(--border-color) var(--card-bg);
+    }
+
+    .tab-content {
+      background-color: var(--card-bg);
+      border-color: var(--border-color);
+    }
+
+    .totais div {
+      background-color: var(--card-bg);
+    }
+
+    .dark-mode-toggle {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+  </style>
 </head>
-<body>
-    <div class="container">
-        <h1>Planilha de Gastos</h1>
+<body class="bg-light">
 
-        <!-- Formulário para adicionar novos gastos -->
-        <div class="form-group">
-            <input type="date" id="date" placeholder="Data" required>
-            <input type="text" id="description" placeholder="Descrição" required>
-            <input type="number" id="value" placeholder="Valor (R$)" required>
-            <button id="add-btn" class="add-btn">Adicionar Gasto</button>
-        </div>
-
-        <!-- Tabela de gastos -->
-        <table>
-            <thead>
-                <tr>
-                    <th>Data</th>
-                    <th>Descrição</th>
-                    <th>Valor (R$)</th>
-                </tr>
-            </thead>
-            <tbody id="table-body">
-                <!-- Linhas adicionadas aparecerão aqui -->
-            </tbody>
-        </table>
-
-        <!-- Exibir o total dos gastos -->
-        <div class="total-sum" id="total-sum">Total: R$ 0,00</div>
-
-        <!-- Botões de Ajuda e Ganhos -->
-        <div class="btn-group">
-            <a href="ajuda.html" class="btn">Ajuda para Preencher</a>
-            <button id="download-btn" class="btn download-btn">Baixar PDF</button>
-        </div>
-
-        <!-- Botão para ir à Planilha de Ganhos -->
-        <a href="ganhos.html" class="btn big-btn">Ir para a Planilha de Ganhos</a>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+  <div class="container">
+    <a class="navbar-brand" href="#">💰 Finanças</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link active" href="index.html">📉 Despesas</a></li>
+        <li class="nav-item"><a class="nav-link" href="ganhos.html">📈 Receitas</a></li>
+        <li class="nav-item"><a class="nav-link" href="resumo.html">📊 Visão Geral</a></li>
+        <li class="nav-item"><a class="nav-link" href="ajuda.html">❓ Ajuda</a></li>
+        <li class="nav-item">
+          <button class="dark-mode-toggle" id="darkModeToggle">🌙</button>
+        </li>
+      </ul>
     </div>
+  </div>
+</nav>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
-    <script>
-        let total = 0; // Variável para armazenar o total dos gastos
+<div class="container bg-white p-4 shadow rounded">
+  <h1 class="text-center text-danger mb-4">Planilha de Despesas</h1>
 
-        // Função para adicionar uma nova linha à tabela de gastos
-        document.getElementById('add-btn').addEventListener('click', function () {
-            const date = document.getElementById('date').value;
-            const description = document.getElementById('description').value;
-            const value = document.getElementById('value').value;
+  <!-- Formulário -->
+  <div class="row g-2 mb-3">
+    <div class="col-md-3"><input type="text" id="description" class="form-control" placeholder="Descrição"></div>
+    <div class="col-md-2"><input type="number" id="value" class="form-control" placeholder="Valor (R$)"></div>
+    <div class="col-md-3">
+      <select id="category" class="form-select">
+        <option value="Mensal">Mensal</option>
+        <option value="Parcelado">Parcelado</option>
+        <option value="Eventual">Eventual</option>
+        <option value="Diversos">Diversos</option>
+      </select>
+    </div>
+    <div class="col-md-2"><input type="date" id="date" class="form-control"></div>
+    <div class="col-md-2 d-grid"><button id="add-btn" class="btn btn-primary">➕ Adicionar</button></div>
+  </div>
 
-            if (date && description && value) {
-                const tableBody = document.getElementById('table-body');
-                const newRow = document.createElement('tr');
+  <!-- Filtro por mês -->
+  <div class="row g-2 mb-3">
+    <div class="col-md-3">
+      <input type="month" id="filter-month" class="form-control">
+    </div>
+  </div>
 
-                // Cria células para Data, Descrição e Valor
-                const dateCell = document.createElement('td');
-                dateCell.textContent = date;
+  <!-- Tabela -->
+  <div class="table-responsive">
+    <table class="table table-striped table-hover">
+      <thead class="table-dark">
+        <tr>
+          <th>Descrição</th>
+          <th>Valor (R$)</th>
+          <th>Categoria</th>
+          <th>Data</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
 
-                const descriptionCell = document.createElement('td');
-                descriptionCell.textContent = description;
+  <!-- Totais -->
+  <div class="row mt-3">
+    <div class="col-md-6">
+      <div class="alert alert-danger fw-bold" id="total-sum">Total: R$ 0,00</div>
+    </div>
+    <div class="col-md-6 text-end">
+      <div class="alert alert-info fw-bold" id="saldo-geral">💰 Saldo: R$ 0,00</div>
+    </div>
+  </div>
 
-                const valueCell = document.createElement('td');
-                valueCell.textContent = parseFloat(value).toFixed(2); // Formata o valor com 2 casas decimais
+  <div class="d-flex gap-2 mt-3">
+    <button id="download-pdf-btn" class="btn btn-success">📄 Exportar PDF</button>
+  </div>
+</div>
 
-                // Adiciona as células à nova linha
-                newRow.appendChild(dateCell);
-                newRow.appendChild(descriptionCell);
-                newRow.appendChild(valueCell);
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// Dark Mode Functionality
+function initializeDarkMode() {
+  const darkModeToggle = document.getElementById('darkModeToggle');
+  const isDarkMode = localStorage.getItem('darkMode') === 'enabled';
 
-                // Adiciona a nova linha à tabela
-                tableBody.appendChild(newRow);
+  // Apply saved mode
+  if (isDarkMode) {
+    document.body.classList.add('dark-mode');
+    darkModeToggle.textContent = '☀️';
+  } else {
+    document.body.classList.remove('dark-mode');
+    darkModeToggle.textContent = '🌙';
+  }
 
-                // Atualiza o total
-                total += parseFloat(value);
-                document.getElementById('total-sum').textContent = `Total: R$ ${total.toFixed(2)}`;
+  // Toggle dark mode
+  darkModeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
 
-                // Limpa os campos do formulário
-                document.getElementById('date').value = '';
-                document.getElementById('description').value = '';
-                document.getElementById('value').value = '';
-            } else {
-                alert('Por favor, preencha todos os campos antes de adicionar um gasto.');
-            }
-        });
+    if (document.body.classList.contains('dark-mode')) {
+      localStorage.setItem('darkMode', 'enabled');
+      darkModeToggle.textContent = '☀️';
+    } else {
+      localStorage.setItem('darkMode', 'disabled');
+      darkModeToggle.textContent = '🌙';
+    }
+  });
+}
 
-        // Função para baixar o PDF com os gastos
-        document.getElementById('download-btn').addEventListener('click', function () {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+let total = 0;
 
-            // Adiciona título ao PDF
-            doc.text("Planilha de Gastos", 20, 10);
+function formatarDataBR(date){
+  const d = new Date(date);
+  return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+}
 
-            // Adiciona o conteúdo da tabela ao PDF
-            doc.autoTable({
-                head: [['Data', 'Descrição', 'Valor (R$)']],
-                body: Array.from(document.querySelectorAll('#table-body tr')).map(row => 
-                    Array.from(row.cells).map(cell => cell.textContent)
-                )
-            });
+function padronizarCategoria(cat){
+  const map = {
+    "Parcela": "Parcelado",
+    "Parcelado": "Parcelado",
+    "Mensal":"Mensal",
+    "Eventual":"Eventual",
+    "Diversos":"Diversos"
+  };
+  return map[cat] || "Diversos";
+}
 
-            // Adiciona o total ao PDF
-            doc.text(`Total: R$ ${total.toFixed(2)}`, 20, doc.previousAutoTable.finalY + 10);
+function atualizarTabela() {
+  const tableBody = document.getElementById("table-body");
+  tableBody.innerHTML = "";
+  const gastos = JSON.parse(localStorage.getItem("gastos")) || [];
+  total = 0;
+  const filtroMes = document.getElementById("filter-month").value;
+  const gastosFiltrados = filtroMes ? gastos.filter(g => g.date.startsWith(filtroMes)) : gastos;
 
-            // Baixa o PDF
-            doc.save('planilha_gastos.pdf');
-        });
-    </script>
+  gastosFiltrados.forEach((g, index) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td contenteditable="true" class="editable description">${g.description}</td>
+      <td contenteditable="true" class="editable value">${parseFloat(g.value).toFixed(2)}</td>
+      <td>
+        <select class="form-select category">
+          <option value="Mensal" ${g.category==="Mensal"?"selected":""}>Mensal</option>
+          <option value="Parcelado" ${g.category==="Parcelado"?"selected":""}>Parcelado</option>
+          <option value="Eventual" ${g.category==="Eventual"?"selected":""}>Eventual</option>
+          <option value="Diversos" ${g.category==="Diversos"?"selected":""}>Diversos</option>
+        </select>
+      </td>
+      <td><input type="date" class="form-control date" value="${g.date}"></td>
+      <td>
+        <button class="btn btn-sm btn-success save-btn" data-index="${index}">💾 Salvar</button>
+        <button class="btn btn-sm btn-danger delete-btn" data-index="${index}">🗑️ Excluir</button>
+      </td>
+    `;
+    tableBody.appendChild(row);
+    total += parseFloat(g.value);
+  });
+
+  document.getElementById("total-sum").textContent = `Total: R$ ${total.toFixed(2)}`;
+  localStorage.setItem("gastosTotal", total);
+  atualizarSaldo();
+}
+
+function atualizarSaldo() {
+  const ganhos = parseFloat(localStorage.getItem("ganhosTotal")) || 0;
+  const saldo = ganhos - total;
+  localStorage.setItem("saldo", saldo);
+  const saldoDiv = document.getElementById("saldo-geral");
+  saldoDiv.textContent = `💰 Saldo: R$ ${saldo.toFixed(2)}`;
+  saldoDiv.classList.remove("text-success","text-danger");
+  saldoDiv.classList.add(saldo >= 0 ? "text-success" : "text-danger");
+}
+
+document.getElementById("add-btn").addEventListener("click", () => {
+  const description = document.getElementById("description").value;
+  const value = parseFloat(document.getElementById("value").value);
+  const category = padronizarCategoria(document.getElementById("category").value);
+  const date = document.getElementById("date").value || new Date().toISOString().split('T')[0];
+
+  if(description && !isNaN(value)){
+    const gastos = JSON.parse(localStorage.getItem("gastos")) || [];
+    gastos.push({description, value, category, date});
+    localStorage.setItem("gastos", JSON.stringify(gastos));
+    document.getElementById("description").value = "";
+    document.getElementById("value").value = "";
+    document.getElementById("date").value = "";
+    atualizarTabela();
+  } else alert("Preencha todos os campos.");
+});
+
+document.getElementById("table-body").addEventListener("click", (e)=>{
+  const gastos = JSON.parse(localStorage.getItem("gastos")) || [];
+  const index = e.target.getAttribute("data-index");
+
+  if(e.target.classList.contains("delete-btn")){
+    gastos.splice(index,1);
+    localStorage.setItem("gastos", JSON.stringify(gastos));
+    atualizarTabela();
+  }
+
+  if(e.target.classList.contains("save-btn")){
+    const row = e.target.closest("tr");
+    gastos[index] = {
+      description: row.querySelector(".description").textContent,
+      value: parseFloat(row.querySelector(".value").textContent),
+      category: padronizarCategoria(row.querySelector(".category").value),
+      date: row.querySelector(".date").value
+    };
+    localStorage.setItem("gastos", JSON.stringify(gastos));
+    atualizarTabela();
+  }
+});
+
+// Filtrar por mês
+document.getElementById("filter-month").addEventListener("change", atualizarTabela);
+
+window.addEventListener("DOMContentLoaded", () => {
+  initializeDarkMode();
+  atualizarTabela();
+});
+
+// PDF
+document.getElementById("download-pdf-btn").addEventListener("click", ()=>{
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.text("Planilha de Despesas", 14, 20);
+  const gastos = JSON.parse(localStorage.getItem("gastos")) || [];
+  const filtroMes = document.getElementById("filter-month").value;
+  const gastosFiltrados = filtroMes ? gastos.filter(g => g.date.startsWith(filtroMes)) : gastos;
+  const rows = gastosFiltrados.map(g=>[g.description, parseFloat(g.value).toFixed(2), g.category, formatarDataBR(g.date)]);
+  doc.autoTable({head:[["Descrição","Valor (R$)","Categoria","Data"]], body:rows, startY:30});
+  const totalMes = gastosFiltrados.reduce((acc,g)=>acc+parseFloat(g.value),0);
+  doc.text(`Total: R$ ${totalMes.toFixed(2)}`, 14, doc.lastAutoTable.finalY+10);
+  doc.save("planilha_despesas.pdf");
+});
+</script>
 </body>
 </html>

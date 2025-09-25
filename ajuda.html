@@ -1,105 +1,250 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ajuda - Por que Fazer uma Planilha de Gastos?</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            text-align: center;
-            color: blue
-        }
-        h2 {
-            color: #333;
-            margin-top: 20px;
-        }
-        p {
-            line-height: 1.6;
-        }
-        ul {
-            list-style-type: square;
-            margin-left: 20px;
-        }
-        .btn {
-            display: inline-block;
-            padding: 15px;
-            font-size: 16px;
-            color: #fff;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 5px;
-            width: 100%;
-            margin-top: 20px;
-        }
-        .btn-gastos {
-            background-color: red;
-        }
-        .btn-gastos:hover {
-            background-color: darkred;
-        }
-        .btn-ganhos {
-            background-color: green;
-        }
-        .btn-ganhos:hover {
-            background-color: darkgreen;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ajuda - Guia de Uso do Sistema</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #f8f9fa;
+      --bg-secondary: #ffffff;
+      --text-primary: #212529;
+      --text-secondary: #6c757d;
+      --border-color: #dee2e6;
+      --card-bg: #ffffff;
+      --table-striped: rgba(0,0,0,.05);
+    }
+
+    .dark-mode {
+      --bg-primary: #121212;
+      --bg-secondary: #1e1e1e;
+      --text-primary: #e0e0e0;
+      --text-secondary: #a0a0a0;
+      --border-color: #444;
+      --card-bg: #2d2d2d;
+      --table-striped: rgba(255,255,255,.05);
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .bg-white {
+      background-color: var(--bg-secondary) !important;
+    }
+
+    .table {
+      color: var(--text-primary);
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+      background-color: var(--table-striped);
+    }
+
+    .table-hover tbody tr:hover {
+      background-color: rgba(0,0,0,0.075);
+    }
+
+    .dark-mode .table-hover tbody tr:hover {
+      background-color: rgba(255,255,255,0.075);
+    }
+
+    .form-control, .form-select {
+      background-color: var(--card-bg);
+      color: var(--text-primary);
+      border-color: var(--border-color);
+    }
+
+    .form-control:focus, .form-select:focus {
+      background-color: var(--card-bg);
+      color: var(--text-primary);
+      border-color: #86b7fe;
+      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border-color: var(--border-color);
+    }
+
+    .alert {
+      background-color: var(--card-bg);
+      border-color: var(--border-color);
+    }
+
+    .canvas-container {
+      background-color: var(--card-bg);
+      border-color: var(--border-color);
+    }
+
+    .nav-tabs .nav-link {
+      color: var(--text-primary);
+    }
+
+    .nav-tabs .nav-link.active {
+      background-color: var(--card-bg);
+      border-color: var(--border-color) var(--border-color) var(--card-bg);
+    }
+
+    .tab-content {
+      background-color: var(--card-bg);
+      border-color: var(--border-color);
+    }
+
+    .totais div {
+      background-color: var(--card-bg);
+    }
+
+    .dark-mode-toggle {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .container-main h2 {
+      font-size: 1.5rem;
+    }
+  </style>
 </head>
-<body>
-    <div class="container">
-        <h1>Ajuda para o Uso da Planilha</h1>
+<body class="bg-light">
 
-        <!-- Primeira seção -->
-        <h2>Por que fazer uma planilha de gastos?</h2>
-        <p>Uma planilha de gastos irá ajudar você a se organizar com seus gastos, facilitando suas decisões e permitindo que você preveja eventuais custos. O mais importante, ajudará a economizar ao identificar e cortar gastos desnecessários, possibilitando que você entenda o real valor do trabalho que presta.</p>
-
-        <!-- Segunda seção -->
-        <h2>Como fazer a minha planilha de gastos?</h2>
-        <p>A primeira coisa que você precisa entender ao fazer sua planilha é a diferença entre gastos pessoais e gastos empresariais. Depois disso, comece a listar todos os seus gastos na planilha. É importante incluir todos os tipos de gastos, como:</p>
-        <ul>
-            <li>Material</li>
-            <li>Combustível</li>
-            <li>Energia elétrica</li>
-            <li>Gás</li>
-            <li>Aluguel</li>
-            <li>Refeição</li>
-            <li>Manutenção de equipamento</li>
-            <li>Impostos</li>
-            <li>Etc</li>
-        </ul>
-
-        <!-- Terceira seção -->
-        <h2>Como fazer a minha planilha de ganhos?</h2>
-        <p>Esta parte é mais simples. Basta incluir todo o dinheiro que você recebeu, sem deixar de registrar nenhuma entrada financeira.</p>
-
-        <h2>Exportar as Planilhas</h2>
-        <p>Para exportar os dados, clique no botão "Baixar PDF" localizado no final de cada planilha. Isso permitirá que você faça o download de um arquivo PDF com todos os registros de gastos ou ganhos, incluindo o total acumulado.</p>
-
-        <!-- Seção de dicas extras -->
-        <h2>Dicas Extras:</h2>
-        <ul>
-            <li>Faça uma nova planilha a cada 30 dias para ter um controle melhor dos seus gastos.</li>
-            <li>Crie uma pasta no seu computador ou celular para armazenar suas planilhas e renomeie-as com o mês e ano. Isso facilitará a consulta sempre que necessário.</li>
-            <li>Você também pode usar essa planilha para as contas de casa, com o mesmo objetivo de reduzir gastos desnecessários.</li>
-        </ul>
-
-        <!-- Botão para voltar às planilhas -->
-        <a href="pagina.html" class="btn btn-gastos">Voltar para a Planilha de Gastos</a>
-        <a href="ganhos.html" class="btn btn-ganhos">Voltar para a Planilha de Ganhos</a>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+  <div class="container">
+    <a class="navbar-brand" href="#">💰 Finanças</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="index.html">📉 Despesas</a></li>
+        <li class="nav-item"><a class="nav-link" href="ganhos.html">📈 Receitas</a></li>
+        <li class="nav-item"><a class="nav-link" href="resumo.html">📊 Visão Geral</a></li>
+        <li class="nav-item"><a class="nav-link active" href="ajuda.html">❓ Ajuda</a></li>
+        <li class="nav-item">
+          <button class="dark-mode-toggle" id="darkModeToggle">🌙</button>
+        </li>
+      </ul>
     </div>
+  </div>
+</nav>
+
+<div class="container bg-white p-4 shadow rounded">
+  <h1 class="text-center text-danger mb-5 fw-bold">Guia de Uso</h1>
+
+  <!-- Por que fazer um controle financeiro -->
+  <section class="mb-4">
+    <h2 class="text-secondary mb-3">Por que criar um controle financeiro?</h2>
+    <p class="lead">Criar um controle financeiro ajuda você a se organizar financeiramente, controlar despesas, prever custos e identificar gastos desnecessários. Isso facilita decisões conscientes e aumenta sua economia.</p>
+  </section>
+
+  <!-- Como controlar despesas -->
+  <section class="mb-4">
+    <h2 class="text-secondary mb-3">Como controlar minhas despesas?</h2>
+    <ol class="ps-3">
+      <li class="mb-2">Separe despesas pessoais e empresariais.</li>
+      <li class="mb-2">Registre todas as despesas, como: material, combustível, energia, gás, aluguel, refeição, manutenção, impostos, etc.</li>
+      <li class="mb-2">Atualize o sistema sempre que houver uma nova despesa para manter o controle realista.</li>
+      <li class="mb-2">Classifique as despesas em categorias: Parcelado, Mensal, Eventual ou Diversos.</li>
+    </ol>
+  </section>
+
+  <!-- Como controlar receitas -->
+  <section class="mb-4">
+    <h2 class="text-secondary mb-3">Como controlar minhas receitas?</h2>
+    <p class="lead">Registre todos os valores recebidos, como salários, vendas ou serviços prestados. Assim, o saldo final refletirá corretamente sua situação financeira. Classifique as receitas em categorias apropriadas como Salário, Venda, Comissão ou Extra.</p>
+  </section>
+
+  <!-- Exportar relatórios -->
+  <section class="mb-4">
+    <h2 class="text-secondary mb-3">Exportar relatórios</h2>
+    <p class="lead">Clique em <strong>"Exportar PDF"</strong> para salvar seus registros. Renomeie o arquivo com o mês e ano para facilitar consultas futuras. Você pode exportar relatórios de despesas, receitas e saldo.</p>
+  </section>
+
+  <!-- Visão Geral -->
+  <section class="mb-4">
+    <h2 class="text-secondary mb-3">Utilizando a Visão Geral</h2>
+    <p class="lead">A página de Visão Geral oferece uma análise completa da sua situação financeira através de gráficos e totais. Use o filtro por mês para analisar períodos específicos e acompanhe a evolução do seu saldo ao longo do tempo.</p>
+  </section>
+
+  <!-- Dicas extras -->
+  <section class="mb-4">
+    <h2 class="text-secondary mb-3">Dicas extras</h2>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">Crie um novo controle a cada mês.</li>
+      <li class="list-group-item">Mantenha seus arquivos organizados por mês e ano.</li>
+      <li class="list-group-item">Use o sistema para controlar despesas da casa ou do negócio.</li>
+      <li class="list-group-item">Revise periodicamente a Visão Geral para identificar tendências.</li>
+      <li class="list-group-item">Utilize o modo escuro para maior conforto visual durante a noite.</li>
+    </ul>
+  </section>
+
+  <!-- Categorias -->
+  <section class="mb-4">
+    <h2 class="text-secondary mb-3">Entendendo as Categorias</h2>
+    <div class="row">
+      <div class="col-md-6">
+        <h4>Despesas</h4>
+        <ul>
+          <li><strong>Parcelado:</strong> Despesas divididas em várias vezes</li>
+          <li><strong>Mensal:</strong> Despesas que se repetem todo mês</li>
+          <li><strong>Eventual:</strong> Despesas esporádicas ou ocasionais</li>
+          <li><strong>Diversos:</strong> Outras despesas não classificadas</li>
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h4>Receitas</h4>
+        <ul>
+          <li><strong>Salário:</strong> Renda fixa mensal</li>
+          <li><strong>Venda:</strong> Receitas provenientes de vendas</li>
+          <li><strong>Comissão:</strong> Ganhos por comissões</li>
+          <li><strong>Extra:</strong> Receitas eventuais ou extras</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Zerar Dados -->
+  <section class="mb-4">
+    <h2 class="text-secondary mb-3">Zerar Dados</h2>
+    <p class="lead">A função "Zerar Dados" permite reiniciar todo o sistema. Use com cuidado, pois esta ação exclui permanentemente todos os registros. Recomendamos exportar seus dados antes de utilizar esta função.</p>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// Dark Mode Functionality
+function initializeDarkMode() {
+  const darkModeToggle = document.getElementById('darkModeToggle');
+  const isDarkMode = localStorage.getItem('darkMode') === 'enabled';
+
+  // Apply saved mode
+  if (isDarkMode) {
+    document.body.classList.add('dark-mode');
+    darkModeToggle.textContent = '☀️';
+  } else {
+    document.body.classList.remove('dark-mode');
+    darkModeToggle.textContent = '🌙';
+  }
+
+  // Toggle dark mode
+  darkModeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+
+    if (document.body.classList.contains('dark-mode')) {
+      localStorage.setItem('darkMode', 'enabled');
+      darkModeToggle.textContent = '☀️';
+    } else {
+      localStorage.setItem('darkMode', 'disabled');
+      darkModeToggle.textContent = '🌙';
+    }
+  });
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  initializeDarkMode();
+});
+</script>
 </body>
 </html>
-

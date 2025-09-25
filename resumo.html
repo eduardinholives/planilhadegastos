@@ -3,141 +3,534 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Resumo Financeiro - Microempresa</title>
+  <title>Visão Geral Financeira</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
   <style>
+    :root {
+      --bg-primary: #f8f9fa;
+      --bg-secondary: #ffffff;
+      --text-primary: #212529;
+      --text-secondary: #6c757d;
+      --border-color: #dee2e6;
+      --card-bg: #ffffff;
+      --table-striped: rgba(0,0,0,.05);
+    }
+
+    .dark-mode {
+      --bg-primary: #121212;
+      --bg-secondary: #1e1e1e;
+      --text-primary: #e0e0e0;
+      --text-secondary: #a0a0a0;
+      --border-color: #444;
+      --card-bg: #2d2d2d;
+      --table-striped: rgba(255,255,255,.05);
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-      background-color: #f4f4f4;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      transition: background-color 0.3s, color 0.3s;
     }
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      background-color: #fff;
-      padding: 20px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      border-radius: 8px;
+
+    .bg-white {
+      background-color: var(--bg-secondary) !important;
     }
-    h1 {
-      text-align: center;
-      color: #333;
+
+    .table {
+      color: var(--text-primary);
     }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+      background-color: var(--table-striped);
+    }
+
+    .table-hover tbody tr:hover {
+      background-color: rgba(0,0,0,0.075);
+    }
+
+    .dark-mode .table-hover tbody tr:hover {
+      background-color: rgba(255,255,255,0.075);
+    }
+
+    .form-control, .form-select {
+      background-color: var(--card-bg);
+      color: var(--text-primary);
+      border-color: var(--border-color);
+    }
+
+    .form-control:focus, .form-select:focus {
+      background-color: var(--card-bg);
+      color: var(--text-primary);
+      border-color: #86b7fe;
+      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
     .card {
-      background: #f9f9f9;
-      padding: 15px;
-      margin: 15px 0;
-      border-radius: 6px;
-      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+      background-color: var(--card-bg);
+      border-color: var(--border-color);
     }
-    .card h2 {
-      margin: 0;
-      font-size: 18px;
-      color: #555;
+
+    .alert {
+      background-color: var(--card-bg);
+      border-color: var(--border-color);
     }
-    .value {
-      font-size: 22px;
-      font-weight: bold;
-      margin-top: 5px;
+
+    .canvas-container {
+      background-color: var(--card-bg);
+      border-color: var(--border-color);
     }
-    .positive {
-      color: #28a745;
+
+    .nav-tabs .nav-link {
+      color: var(--text-primary);
     }
-    .negative {
-      color: red;
+
+    .nav-tabs .nav-link.active {
+      background-color: var(--card-bg);
+      border-color: var(--border-color) var(--border-color) var(--card-bg);
     }
-    .form-group {
-      margin-top: 20px;
+
+    .tab-content {
+      background-color: var(--card-bg);
+      border-color: var(--border-color);
     }
-    input, button {
-      padding: 10px;
-      margin: 5px 0;
-      width: 100%;
-      font-size: 16px;
+
+    .totais div {
+      background-color: var(--card-bg);
     }
-    button {
-      background-color: #007bff;
-      color: white;
+
+    .dark-mode-toggle {
+      background: none;
       border: none;
-      border-radius: 5px;
+      font-size: 1.5rem;
       cursor: pointer;
+      margin-left: 10px;
     }
-    button:hover {
-      background-color: #0056b3;
-    }
-    .btn-back {
-      display: block;
-      margin-top: 20px;
-      text-align: center;
-      background: #6c757d;
-      color: white;
-      padding: 12px;
+
+    .canvas-container {
+      position: relative;
+      height: 350px;
+      width: 100%;
+      margin-bottom: 30px;
+      padding: 15px;
       border-radius: 5px;
-      text-decoration: none;
     }
-    .btn-back:hover {
-      background: #5a6268;
+
+    canvas {
+      max-width: 100%;
+    }
+
+    .grafico-titulo {
+      text-align: center;
+      margin-bottom: 15px;
+      font-weight: bold;
+      color: var(--text-primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .totais {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+    }
+
+    .totais div {
+      font-weight: bold;
+      padding: 10px;
+      border-radius: 5px;
+      width: 30%;
+      text-align: center;
+    }
+
+    .totais .despesas { background-color: var(--card-bg); color:#842029; }
+    .totais .receitas { background-color: var(--card-bg); color:#0f5132; }
+    .totais .saldo { background-color: var(--card-bg); color:#055160; }
+
+    .btn-download { margin-bottom: 20px; }
+    .btn-grafico {
+      margin-left: 10px;
+      padding: 5px 10px;
+      font-size: 0.8rem;
     }
   </style>
 </head>
-<body>
+<body class="bg-light">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
   <div class="container">
-    <h1>Resumo Financeiro</h1>
-
-    <div class="card">
-      <h2>Total de Ganhos</h2>
-      <div id="ganhos" class="value positive">R$ 0,00</div>
+    <a class="navbar-brand" href="#">💰 Finanças</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="index.html">📉 Despesas</a></li>
+        <li class="nav-item"><a class="nav-link" href="ganhos.html">📈 Receitas</a></li>
+        <li class="nav-item"><a class="nav-link active" href="#">📊 Visão Geral</a></li>
+        <li class="nav-item"><a class="nav-link" href="ajuda.html">❓ Ajuda</a></li>
+        <li class="nav-item">
+          <button class="dark-mode-toggle" id="darkModeToggle">🌙</button>
+        </li>
+      </ul>
     </div>
+  </div>
+</nav>
 
-    <div class="card">
-      <h2>Total de Gastos</h2>
-      <div id="gastos" class="value negative">R$ 0,00</div>
+<div class="container bg-white p-4 shadow rounded">
+  <h1 class="text-center mb-4">Visão Geral Financeira</h1>
+
+  <!-- Filtro e reset -->
+  <div class="row g-2 mb-3">
+    <div class="col-md-3">
+      <input type="month" id="filter-month" class="form-control">
     </div>
-
-    <div class="card">
-      <h2>Economia (Ganhos - Gastos)</h2>
-      <div id="economia" class="value">R$ 0,00</div>
+    <div class="col-md-3 d-grid">
+      <button id="reset-btn" class="btn btn-danger">🔄 Zerar Dados</button>
     </div>
-
-    <div class="card">
-      <h2>Reserva</h2>
-      <div id="reserva-atual" class="value">R$ 0,00</div>
-      <div class="form-group">
-        <input type="number" id="valor-reserva" placeholder="Defina sua reserva inicial (R$)">
-        <button onclick="atualizarReserva()">Atualizar Reserva</button>
-      </div>
-    </div>
-
-    <a href="index.html" class="btn-back">Voltar para Planilhas</a>
   </div>
 
-  <script>
-    // Carregar valores do localStorage
-    let ganhos = parseFloat(localStorage.getItem("ganhosTotal")) || 0;
-    let gastos = parseFloat(localStorage.getItem("gastosTotal")) || 0;
-    let reserva = parseFloat(localStorage.getItem("reserva")) || 0;
+  <!-- Totais numéricos -->
+  <div class="totais">
+    <div class="despesas" id="totalDespesas">Despesas: R$ 0,00</div>
+    <div class="receitas" id="totalReceitas">Receitas: R$ 0,00</div>
+    <div class="saldo" id="totalSaldo">Saldo: R$ 0,00</div>
+  </div>
 
-    function atualizarResumo() {
-      document.getElementById("ganhos").textContent = "R$ " + ganhos.toFixed(2);
-      document.getElementById("gastos").textContent = "R$ " + gastos.toFixed(2);
-      let economia = ganhos - gastos;
-      let economiaEl = document.getElementById("economia");
-      economiaEl.textContent = "R$ " + economia.toFixed(2);
-      economiaEl.className = "value " + (economia >= 0 ? "positive" : "negative");
-      document.getElementById("reserva-atual").textContent = "R$ " + reserva.toFixed(2);
+  <!-- Abas -->
+  <ul class="nav nav-tabs mb-3" id="resumoTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="tab-saldo" data-bs-toggle="tab" data-bs-target="#saldo" type="button" role="tab">Saldo</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="tab-despesas" data-bs-toggle="tab" data-bs-target="#despesas" type="button" role="tab">Despesas</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="tab-receitas" data-bs-toggle="tab" data-bs-target="#receitas" type="button" role="tab">Receitas</button>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+    <!-- Aba Saldo -->
+    <div class="tab-pane fade show active" id="saldo" role="tabpanel">
+      <button class="btn btn-success btn-download" id="downloadSaldoPdf">📄 Exportar PDF Saldo</button>
+      <div class="grafico-titulo">
+        📈 Evolução do Saldo (Receitas - Despesas)
+        <button class="btn btn-primary btn-sm btn-grafico" id="downloadGraficoSaldo">📥 Baixar Gráfico</button>
+      </div>
+      <div class="canvas-container"><canvas id="linhaSaldo"></canvas></div>
+    </div>
+
+    <!-- Aba Despesas -->
+    <div class="tab-pane fade" id="despesas" role="tabpanel">
+      <button class="btn btn-success btn-download" id="downloadDespesasPdf">📄 Exportar PDF Despesas</button>
+      <div class="grafico-titulo">
+        🍕 Despesas por Categoria
+        <button class="btn btn-primary btn-sm btn-grafico" id="downloadPizzaDespesas">📥 Baixar Gráfico</button>
+      </div>
+      <div class="canvas-container"><canvas id="pizzaDespesas"></canvas></div>
+      <div class="grafico-titulo">
+        📊 Despesas ao longo do tempo
+        <button class="btn btn-primary btn-sm btn-grafico" id="downloadBarraDespesas">📥 Baixar Gráfico</button>
+      </div>
+      <div class="canvas-container"><canvas id="barraDespesas"></canvas></div>
+    </div>
+
+    <!-- Aba Receitas -->
+    <div class="tab-pane fade" id="receitas" role="tabpanel">
+      <button class="btn btn-success btn-download" id="downloadReceitasPdf">📄 Exportar PDF Receitas</button>
+      <div class="grafico-titulo">
+        🍕 Receitas por Categoria
+        <button class="btn btn-primary btn-sm btn-grafico" id="downloadPizzaReceitas">📥 Baixar Gráfico</button>
+      </div>
+      <div class="canvas-container"><canvas id="pizzaReceitas"></canvas></div>
+      <div class="grafico-titulo">
+        📊 Receitas ao longo do tempo
+        <button class="btn btn-primary btn-sm btn-grafico" id="downloadBarraReceitas">📥 Baixar Gráfico</button>
+      </div>
+      <div class="canvas-container"><canvas id="barraReceitas"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// Dark Mode Functionality
+function initializeDarkMode() {
+  const darkModeToggle = document.getElementById('darkModeToggle');
+  const isDarkMode = localStorage.getItem('darkMode') === 'enabled';
+
+  // Apply saved mode
+  if (isDarkMode) {
+    document.body.classList.add('dark-mode');
+    darkModeToggle.textContent = '☀️';
+  } else {
+    document.body.classList.remove('dark-mode');
+    darkModeToggle.textContent = '🌙';
+  }
+
+  // Toggle dark mode
+  darkModeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+
+    if (document.body.classList.contains('dark-mode')) {
+      localStorage.setItem('darkMode', 'enabled');
+      darkModeToggle.textContent = '☀️';
+    } else {
+      localStorage.setItem('darkMode', 'disabled');
+      darkModeToggle.textContent = '🌙';
     }
+  });
+}
 
-    function atualizarReserva() {
-      const novoValor = parseFloat(document.getElementById("valor-reserva").value);
-      if (!isNaN(novoValor)) {
-        reserva = novoValor;
-        localStorage.setItem("reserva", reserva);
-        atualizarResumo();
-        document.getElementById("valor-reserva").value = "";
-      }
+let pizzaDespesas, barraDespesas, pizzaReceitas, barraReceitas, linhaSaldo;
+
+function formatarDataBr(data){
+  const d = new Date(data);
+  const day = String(d.getDate()).padStart(2,'0');
+  const month = String(d.getMonth()+1).padStart(2,'0');
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+function inicializarGraficos(){
+  pizzaDespesas = new Chart(document.getElementById("pizzaDespesas"), {
+    type:'pie',
+    data:{labels:[], datasets:[{data:[], backgroundColor:["#dc3545","#fd7e14","#ffc107","#6c757d"]}]},
+    options:{responsive:true, maintainAspectRatio:false}
+  });
+
+  barraDespesas = new Chart(document.getElementById("barraDespesas"), {
+    type:'bar',
+    data:{labels:[], datasets:[{label:'Despesas', data:[], backgroundColor:'#dc3545'}]},
+    options:{responsive:true, maintainAspectRatio:false}
+  });
+
+  pizzaReceitas = new Chart(document.getElementById("pizzaReceitas"), {
+    type:'pie',
+    data:{labels:[], datasets:[{data:[], backgroundColor:["#28a745","#20c997","#0dcaf0","#6c757d"]}]},
+    options:{responsive:true, maintainAspectRatio:false}
+  });
+
+  barraReceitas = new Chart(document.getElementById("barraReceitas"), {
+    type:'bar',
+    data:{labels:[], datasets:[{label:'Receitas', data:[], backgroundColor:'#28a745'}]},
+    options:{responsive:true, maintainAspectRatio:false}
+  });
+
+  linhaSaldo = new Chart(document.getElementById("linhaSaldo"), {
+    type:'line',
+    data:{labels:[], datasets:[{label:'Saldo', data:[], borderColor:'#007bff', backgroundColor:'rgba(0,123,255,0.2)', fill:true, tension:0.3}]},
+    options:{responsive:true, maintainAspectRatio:false, scales:{y:{beginAtZero:true}}}
+  });
+}
+
+function atualizarGraficos(){
+  const filtroMes = document.getElementById("filter-month").value;
+  const despesas = JSON.parse(localStorage.getItem("gastos")) || [];
+  const receitas = JSON.parse(localStorage.getItem("ganhos")) || [];
+
+  const despesasFiltradas = filtroMes ? despesas.filter(d=>d.date.startsWith(filtroMes)) : despesas;
+  const receitasFiltradas = filtroMes ? receitas.filter(r=>r.date.startsWith(filtroMes)) : receitas;
+
+  const totalD = despesasFiltradas.reduce((s,d)=>s+parseFloat(d.value),0);
+  const totalR = receitasFiltradas.reduce((s,r)=>s+parseFloat(r.value),0);
+  const saldo = totalR - totalD;
+
+  document.getElementById("totalDespesas").textContent = `Despesas: R$ ${totalD.toFixed(2)}`;
+  document.getElementById("totalReceitas").textContent = `Receitas: R$ ${totalR.toFixed(2)}`;
+  document.getElementById("totalSaldo").textContent = `Saldo: R$ ${saldo.toFixed(2)}`;
+
+  // Pizza Despesas
+  const catsD = ["Parcelado","Mensal","Eventual","Diversos"];
+  pizzaDespesas.data.labels = catsD;
+  pizzaDespesas.data.datasets[0].data = catsD.map(c=>despesasFiltradas.filter(d=>d.category===c).reduce((s,d)=>s+parseFloat(d.value),0));
+  pizzaDespesas.update();
+
+  // Barras Despesas
+  const datasD = [...new Set(despesasFiltradas.map(d=>d.date))].sort();
+  barraDespesas.data.labels = datasD.map(formatarDataBr);
+  barraDespesas.data.datasets[0].data = datasD.map(d=>despesasFiltradas.filter(g=>g.date===d).reduce((s,g)=>s+parseFloat(g.value),0));
+  barraDespesas.update();
+
+  // Pizza Receitas
+  const catsR = ["Salário","Venda","Comissão","Extra"];
+  pizzaReceitas.data.labels = catsR;
+  pizzaReceitas.data.datasets[0].data = catsR.map(c=>receitasFiltradas.filter(r=>r.category===c).reduce((s,r)=>s+parseFloat(r.value),0));
+  pizzaReceitas.update();
+
+  // Barras Receitas
+  const datasR = [...new Set(receitasFiltradas.map(r=>r.date))].sort();
+  barraReceitas.data.labels = datasR.map(formatarDataBr);
+  barraReceitas.data.datasets[0].data = datasR.map(d=>receitasFiltradas.filter(r=>r.date===d).reduce((s,r)=>s+parseFloat(r.value),0));
+  barraReceitas.update();
+
+  // Linha Saldo
+  const todasDatas = [...new Set([...datasD,...datasR])].sort();
+  linhaSaldo.data.labels = todasDatas.map(formatarDataBr);
+  linhaSaldo.data.datasets[0].data = todasDatas.map(d=>{
+    const totalD = despesasFiltradas.filter(g=>g.date===d).reduce((s,g)=>s+parseFloat(g.value),0);
+    const totalR = receitasFiltradas.filter(r=>r.date===d).reduce((s,r)=>s+parseFloat(r.value),0);
+    return totalR-totalD;
+  });
+  linhaSaldo.update();
+}
+
+function baixarGrafico(chart, nomeArquivo) {
+  const tempCanvas = document.createElement('canvas');
+  tempCanvas.width = chart.canvas.width;
+  tempCanvas.height = chart.canvas.height;
+  const tempCtx = tempCanvas.getContext('2d');
+  tempCtx.fillStyle = 'white';
+  tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+  tempCtx.drawImage(chart.canvas, 0, 0);
+  const link = document.createElement('a');
+  link.download = `${nomeArquivo}.png`;
+  link.href = tempCanvas.toDataURL('image/png');
+  link.click();
+}
+
+function baixarPdf(nome, dados, incluirCategoria=false){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  doc.text(nome, 14, 20);
+
+  const body = incluirCategoria ?
+    dados.map(d => [d.description, parseFloat(d.value).toFixed(2), d.category, formatarDataBr(d.date)]) :
+    dados.map(d => [d.description, parseFloat(d.value).toFixed(2), formatarDataBr(d.date)]);
+
+  const head = incluirCategoria ?
+    ["Descrição", "Valor (R$)", "Categoria", "Data"] :
+    ["Descrição", "Valor (R$)", "Data"];
+
+  doc.autoTable({
+    head: [head],
+    body: body,
+    startY: 30
+  });
+
+  doc.save(`${nome}.pdf`);
+}
+
+window.addEventListener("DOMContentLoaded",()=>{
+  initializeDarkMode();
+  inicializarGraficos();
+  atualizarGraficos();
+
+  document.getElementById("filter-month").addEventListener("change", atualizarGraficos);
+
+  document.getElementById("reset-btn").addEventListener("click",()=>{
+    if(confirm("Deseja realmente zerar todos os dados?")){
+      localStorage.removeItem("gastos");
+      localStorage.removeItem("ganhos");
+      atualizarGraficos();
     }
+  });
 
-    atualizarResumo();
-  </script>
+  document.getElementById("downloadDespesasPdf").addEventListener("click",()=>{
+  const filtroMes = document.getElementById("filter-month").value;
+  const despesas = JSON.parse(localStorage.getItem("gastos")) || [];
+  const despesasFiltradas = filtroMes ? despesas.filter(d=>d.date.startsWith(filtroMes)) : despesas;
+
+  const dados = despesasFiltradas.map(d=>({
+    description:d.description,
+    value: "-" + parseFloat(d.value).toFixed(2),
+    category:d.category,
+    date: formatarDataBr(d.date)
+  }));
+
+  const totalDespesas = dados.reduce((acc,d)=> acc + parseFloat(d.value), 0);
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.text("Resumo de Despesas",14,20);
+
+  doc.autoTable({
+    head: [["Descrição","Valor (R$)","Categoria","Data"]],
+    body: dados.map(d=>[d.description,d.value,d.category,d.date]),
+    startY: 30
+  });
+
+  doc.text(`Total de Despesas: R$ ${totalDespesas.toFixed(2)}`,14, doc.lastAutoTable.finalY + 10);
+  doc.save("Despesas.pdf");
+});
+
+document.getElementById("downloadReceitasPdf").addEventListener("click",()=>{
+  const filtroMes = document.getElementById("filter-month").value;
+  const receitas = JSON.parse(localStorage.getItem("ganhos")) || [];
+  const receitasFiltradas = filtroMes ? receitas.filter(r=>r.date.startsWith(filtroMes)) : receitas;
+
+  const dados = receitasFiltradas.map(r=>({
+    description:r.description,
+    value: parseFloat(r.value).toFixed(2),
+    category:r.category,
+    date: formatarDataBr(r.date)
+  }));
+
+  const totalReceitas = dados.reduce((acc,d)=> acc + parseFloat(d.value), 0);
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.text("Resumo de Receitas",14,20);
+
+  doc.autoTable({
+    head: [["Descrição","Valor (R$)","Categoria","Data"]],
+    body: dados.map(d=>[d.description,d.value,d.category,d.date]),
+    startY: 30
+  });
+
+  doc.text(`Total de Receitas: R$ ${totalReceitas.toFixed(2)}`,14, doc.lastAutoTable.finalY + 10);
+  doc.save("Receitas.pdf");
+});
+
+  document.getElementById("downloadSaldoPdf").addEventListener("click",()=>{
+  const filtroMes = document.getElementById("filter-month").value;
+  const despesas = JSON.parse(localStorage.getItem("gastos")) || [];
+  const receitas = JSON.parse(localStorage.getItem("ganhos")) || [];
+  const despesasFiltradas = filtroMes ? despesas.filter(d=>d.date.startsWith(filtroMes)) : despesas;
+  const receitasFiltradas = filtroMes ? receitas.filter(r=>r.date.startsWith(filtroMes)) : receitas;
+
+  const dados = [
+    ...despesasFiltradas.map(d=>({
+      description:d.description,
+      value: "-" + parseFloat(d.value).toFixed(2),
+      category:d.category,
+      date: formatarDataBr(d.date)
+    })),
+    ...receitasFiltradas.map(r=>({
+      description:r.description,
+      value: parseFloat(r.value).toFixed(2),
+      category:r.category,
+      date: formatarDataBr(r.date)
+    }))
+  ];
+
+  const totalSaldo = dados.reduce((acc,d)=>{
+    return acc + parseFloat(d.value.replace(",","."));
+  },0);
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.text("Resumo do Saldo",14,20);
+
+  doc.autoTable({
+    head: [["Descrição","Valor (R$)","Categoria","Data"]],
+    body: dados.map(d=>[d.description,d.value,d.category,d.date]),
+    startY: 30
+  });
+
+  doc.text(`Total do Saldo: R$ ${totalSaldo.toFixed(2)}`,14, doc.lastAutoTable.finalY + 10);
+
+  doc.save("Saldo.pdf");
+});
+
+  document.getElementById("downloadGraficoSaldo").addEventListener("click",()=>{baixarGrafico(linhaSaldo, "grafico_saldo");});
+  document.getElementById("downloadPizzaDespesas").addEventListener("click",()=>{baixarGrafico(pizzaDespesas, "grafico_pizza_despesas");});
+  document.getElementById("downloadBarraDespesas").addEventListener("click",()=>{baixarGrafico(barraDespesas, "grafico_barra_despesas");});
+  document.getElementById("downloadPizzaReceitas").addEventListener("click",()=>{baixarGrafico(pizzaReceitas, "grafico_pizza_receitas");});
+  document.getElementById("downloadBarraReceitas").addEventListener("click",()=>{baixarGrafico(barraReceitas, "grafico_barra_receitas");});
+});
+</script>
 </body>
 </html>
