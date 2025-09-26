@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Planilha de Receitas</title>
+  <title>Controle de Receitas</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
@@ -114,7 +114,10 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
   <div class="container">
     <a class="navbar-brand" href="#">💰 Finanças</a>
-    <div class="collapse navbar-collapse">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item"><a class="nav-link" href="index.html">📉 Despesas</a></li>
         <li class="nav-item"><a class="nav-link active" href="ganhos.html">📈 Receitas</a></li>
@@ -129,7 +132,7 @@
 </nav>
 
 <div class="container bg-white p-4 shadow rounded">
-  <h1 class="text-center text-success mb-4">Planilha de Receitas</h1>
+  <h1 class="text-center text-success mb-4">Controle de Receitas</h1>
 
   <!-- Formulário -->
   <div class="row g-2 mb-3">
@@ -225,32 +228,32 @@ function formatarDataBR(date){
 function atualizarTabela() {
   const tableBody = document.getElementById("table-body");
   tableBody.innerHTML = "";
-  const ganhos = JSON.parse(localStorage.getItem("ganhos")) || [];
+  const receitas = JSON.parse(localStorage.getItem("ganhos")) || [];
   total = 0;
   const filtroMes = document.getElementById("filter-month").value;
-  const ganhosFiltrados = filtroMes ? ganhos.filter(g => g.date.startsWith(filtroMes)) : ganhos;
+  const receitasFiltradas = filtroMes ? receitas.filter(r => r.date.startsWith(filtroMes)) : receitas;
 
-  ganhosFiltrados.forEach((g, index) => {
+  receitasFiltradas.forEach((r, index) => {
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td contenteditable="true" class="editable description">${g.description}</td>
-      <td contenteditable="true" class="editable value">${parseFloat(g.value).toFixed(2)}</td>
+      <td contenteditable="true" class="editable description">${r.description}</td>
+      <td contenteditable="true" class="editable value">${parseFloat(r.value).toFixed(2)}</td>
       <td>
         <select class="form-select category">
-          <option value="Salário" ${g.category==="Salário"?"selected":""}>Salário</option>
-          <option value="Venda" ${g.category==="Venda"?"selected":""}>Venda</option>
-          <option value="Comissão" ${g.category==="Comissão"?"selected":""}>Comissão</option>
-          <option value="Extra" ${g.category==="Extra"?"selected":""}>Extra</option>
+          <option value="Salário" ${r.category==="Salário"?"selected":""}>Salário</option>
+          <option value="Venda" ${r.category==="Venda"?"selected":""}>Venda</option>
+          <option value="Comissão" ${r.category==="Comissão"?"selected":""}>Comissão</option>
+          <option value="Extra" ${r.category==="Extra"?"selected":""}>Extra</option>
         </select>
       </td>
-      <td><input type="date" class="form-control date" value="${g.date}"></td>
+      <td><input type="date" class="form-control date" value="${r.date}"></td>
       <td>
         <button class="btn btn-sm btn-success save-btn" data-index="${index}">💾 Salvar</button>
         <button class="btn btn-sm btn-danger delete-btn" data-index="${index}">🗑️ Excluir</button>
       </td>
     `;
     tableBody.appendChild(row);
-    total += parseFloat(g.value);
+    total += parseFloat(r.value);
   });
 
   document.getElementById("total-sum").textContent = `Total: R$ ${total.toFixed(2)}`;
@@ -259,8 +262,8 @@ function atualizarTabela() {
 }
 
 function atualizarSaldo() {
-  const gastos = parseFloat(localStorage.getItem("gastosTotal")) || 0;
-  const saldo = total - gastos;
+  const despesas = parseFloat(localStorage.getItem("gastosTotal")) || 0;
+  const saldo = total - despesas;
   localStorage.setItem("saldo", saldo);
   const saldoDiv = document.getElementById("saldo-geral");
   saldoDiv.textContent = `💰 Saldo: R$ ${saldo.toFixed(2)}`;
@@ -275,9 +278,9 @@ document.getElementById("add-btn").addEventListener("click", () => {
   const date = document.getElementById("date").value || new Date().toISOString().split('T')[0];
 
   if(description && !isNaN(value)){
-    const ganhos = JSON.parse(localStorage.getItem("ganhos")) || [];
-    ganhos.push({description, value, category, date});
-    localStorage.setItem("ganhos", JSON.stringify(ganhos));
+    const receitas = JSON.parse(localStorage.getItem("ganhos")) || [];
+    receitas.push({description, value, category, date});
+    localStorage.setItem("ganhos", JSON.stringify(receitas));
     document.getElementById("description").value = "";
     document.getElementById("value").value = "";
     document.getElementById("date").value = "";
@@ -286,24 +289,24 @@ document.getElementById("add-btn").addEventListener("click", () => {
 });
 
 document.getElementById("table-body").addEventListener("click", (e)=>{
-  const ganhos = JSON.parse(localStorage.getItem("ganhos")) || [];
+  const receitas = JSON.parse(localStorage.getItem("ganhos")) || [];
   const index = e.target.getAttribute("data-index");
 
   if(e.target.classList.contains("delete-btn")){
-    ganhos.splice(index,1);
-    localStorage.setItem("ganhos", JSON.stringify(ganhos));
+    receitas.splice(index,1);
+    localStorage.setItem("ganhos", JSON.stringify(receitas));
     atualizarTabela();
   }
 
   if(e.target.classList.contains("save-btn")){
     const row = e.target.closest("tr");
-    ganhos[index] = {
+    receitas[index] = {
       description: row.querySelector(".description").textContent,
       value: parseFloat(row.querySelector(".value").textContent),
       category: row.querySelector(".category").value,
       date: row.querySelector(".date").value
     };
-    localStorage.setItem("ganhos", JSON.stringify(ganhos));
+    localStorage.setItem("ganhos", JSON.stringify(receitas));
     atualizarTabela();
   }
 });
@@ -320,15 +323,15 @@ window.addEventListener("DOMContentLoaded", () => {
 document.getElementById("download-pdf-btn").addEventListener("click", ()=>{
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
-  doc.text("Planilha de Receitas", 14, 20);
-  const ganhos = JSON.parse(localStorage.getItem("ganhos")) || [];
+  doc.text("Relatório de Receitas", 14, 20);
+  const receitas = JSON.parse(localStorage.getItem("ganhos")) || [];
   const filtroMes = document.getElementById("filter-month").value;
-  const ganhosFiltrados = filtroMes ? ganhos.filter(g => g.date.startsWith(filtroMes)) : ganhos;
-  const rows = ganhosFiltrados.map(g=>[g.description, parseFloat(g.value).toFixed(2), g.category, formatarDataBR(g.date)]);
+  const receitasFiltradas = filtroMes ? receitas.filter(r => r.date.startsWith(filtroMes)) : receitas;
+  const rows = receitasFiltradas.map(r=>[r.description, parseFloat(r.value).toFixed(2), r.category, formatarDataBR(r.date)]);
   doc.autoTable({head:[["Descrição","Valor (R$)","Categoria","Data"]], body:rows, startY:30});
-  const totalMes = ganhosFiltrados.reduce((acc,g)=>acc+parseFloat(g.value),0);
+  const totalMes = receitasFiltradas.reduce((acc,r)=>acc+parseFloat(r.value),0);
   doc.text(`Total: R$ ${totalMes.toFixed(2)}`, 14, doc.lastAutoTable.finalY+10);
-  doc.save("planilha_receitas.pdf");
+  doc.save("relatorio_receitas.pdf");
 });
 </script>
 </body>

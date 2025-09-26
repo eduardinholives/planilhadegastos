@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Planilha de Despesas</title>
+  <title>Controle de Despesas</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
@@ -114,7 +114,10 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
   <div class="container">
     <a class="navbar-brand" href="#">💰 Finanças</a>
-    <div class="collapse navbar-collapse">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item"><a class="nav-link active" href="index.html">📉 Despesas</a></li>
         <li class="nav-item"><a class="nav-link" href="ganhos.html">📈 Receitas</a></li>
@@ -129,7 +132,7 @@
 </nav>
 
 <div class="container bg-white p-4 shadow rounded">
-  <h1 class="text-center text-danger mb-4">Planilha de Despesas</h1>
+  <h1 class="text-center text-danger mb-4">Controle de Despesas</h1>
 
   <!-- Formulário -->
   <div class="row g-2 mb-3">
@@ -236,32 +239,32 @@ function padronizarCategoria(cat){
 function atualizarTabela() {
   const tableBody = document.getElementById("table-body");
   tableBody.innerHTML = "";
-  const gastos = JSON.parse(localStorage.getItem("gastos")) || [];
+  const despesas = JSON.parse(localStorage.getItem("gastos")) || [];
   total = 0;
   const filtroMes = document.getElementById("filter-month").value;
-  const gastosFiltrados = filtroMes ? gastos.filter(g => g.date.startsWith(filtroMes)) : gastos;
+  const despesasFiltradas = filtroMes ? despesas.filter(d => d.date.startsWith(filtroMes)) : despesas;
 
-  gastosFiltrados.forEach((g, index) => {
+  despesasFiltradas.forEach((d, index) => {
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td contenteditable="true" class="editable description">${g.description}</td>
-      <td contenteditable="true" class="editable value">${parseFloat(g.value).toFixed(2)}</td>
+      <td contenteditable="true" class="editable description">${d.description}</td>
+      <td contenteditable="true" class="editable value">${parseFloat(d.value).toFixed(2)}</td>
       <td>
         <select class="form-select category">
-          <option value="Mensal" ${g.category==="Mensal"?"selected":""}>Mensal</option>
-          <option value="Parcelado" ${g.category==="Parcelado"?"selected":""}>Parcelado</option>
-          <option value="Eventual" ${g.category==="Eventual"?"selected":""}>Eventual</option>
-          <option value="Diversos" ${g.category==="Diversos"?"selected":""}>Diversos</option>
+          <option value="Mensal" ${d.category==="Mensal"?"selected":""}>Mensal</option>
+          <option value="Parcelado" ${d.category==="Parcelado"?"selected":""}>Parcelado</option>
+          <option value="Eventual" ${d.category==="Eventual"?"selected":""}>Eventual</option>
+          <option value="Diversos" ${d.category==="Diversos"?"selected":""}>Diversos</option>
         </select>
       </td>
-      <td><input type="date" class="form-control date" value="${g.date}"></td>
+      <td><input type="date" class="form-control date" value="${d.date}"></td>
       <td>
         <button class="btn btn-sm btn-success save-btn" data-index="${index}">💾 Salvar</button>
         <button class="btn btn-sm btn-danger delete-btn" data-index="${index}">🗑️ Excluir</button>
       </td>
     `;
     tableBody.appendChild(row);
-    total += parseFloat(g.value);
+    total += parseFloat(d.value);
   });
 
   document.getElementById("total-sum").textContent = `Total: R$ ${total.toFixed(2)}`;
@@ -270,8 +273,8 @@ function atualizarTabela() {
 }
 
 function atualizarSaldo() {
-  const ganhos = parseFloat(localStorage.getItem("ganhosTotal")) || 0;
-  const saldo = ganhos - total;
+  const receitas = parseFloat(localStorage.getItem("ganhosTotal")) || 0;
+  const saldo = receitas - total;
   localStorage.setItem("saldo", saldo);
   const saldoDiv = document.getElementById("saldo-geral");
   saldoDiv.textContent = `💰 Saldo: R$ ${saldo.toFixed(2)}`;
@@ -286,9 +289,9 @@ document.getElementById("add-btn").addEventListener("click", () => {
   const date = document.getElementById("date").value || new Date().toISOString().split('T')[0];
 
   if(description && !isNaN(value)){
-    const gastos = JSON.parse(localStorage.getItem("gastos")) || [];
-    gastos.push({description, value, category, date});
-    localStorage.setItem("gastos", JSON.stringify(gastos));
+    const despesas = JSON.parse(localStorage.getItem("gastos")) || [];
+    despesas.push({description, value, category, date});
+    localStorage.setItem("gastos", JSON.stringify(despesas));
     document.getElementById("description").value = "";
     document.getElementById("value").value = "";
     document.getElementById("date").value = "";
@@ -297,24 +300,24 @@ document.getElementById("add-btn").addEventListener("click", () => {
 });
 
 document.getElementById("table-body").addEventListener("click", (e)=>{
-  const gastos = JSON.parse(localStorage.getItem("gastos")) || [];
+  const despesas = JSON.parse(localStorage.getItem("gastos")) || [];
   const index = e.target.getAttribute("data-index");
 
   if(e.target.classList.contains("delete-btn")){
-    gastos.splice(index,1);
-    localStorage.setItem("gastos", JSON.stringify(gastos));
+    despesas.splice(index,1);
+    localStorage.setItem("gastos", JSON.stringify(despesas));
     atualizarTabela();
   }
 
   if(e.target.classList.contains("save-btn")){
     const row = e.target.closest("tr");
-    gastos[index] = {
+    despesas[index] = {
       description: row.querySelector(".description").textContent,
       value: parseFloat(row.querySelector(".value").textContent),
       category: padronizarCategoria(row.querySelector(".category").value),
       date: row.querySelector(".date").value
     };
-    localStorage.setItem("gastos", JSON.stringify(gastos));
+    localStorage.setItem("gastos", JSON.stringify(despesas));
     atualizarTabela();
   }
 });
@@ -331,15 +334,15 @@ window.addEventListener("DOMContentLoaded", () => {
 document.getElementById("download-pdf-btn").addEventListener("click", ()=>{
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
-  doc.text("Planilha de Despesas", 14, 20);
-  const gastos = JSON.parse(localStorage.getItem("gastos")) || [];
+  doc.text("Relatório de Despesas", 14, 20);
+  const despesas = JSON.parse(localStorage.getItem("gastos")) || [];
   const filtroMes = document.getElementById("filter-month").value;
-  const gastosFiltrados = filtroMes ? gastos.filter(g => g.date.startsWith(filtroMes)) : gastos;
-  const rows = gastosFiltrados.map(g=>[g.description, parseFloat(g.value).toFixed(2), g.category, formatarDataBR(g.date)]);
+  const despesasFiltradas = filtroMes ? despesas.filter(d => d.date.startsWith(filtroMes)) : despesas;
+  const rows = despesasFiltradas.map(d=>[d.description, parseFloat(d.value).toFixed(2), d.category, formatarDataBR(d.date)]);
   doc.autoTable({head:[["Descrição","Valor (R$)","Categoria","Data"]], body:rows, startY:30});
-  const totalMes = gastosFiltrados.reduce((acc,g)=>acc+parseFloat(g.value),0);
+  const totalMes = despesasFiltradas.reduce((acc,d)=>acc+parseFloat(d.value),0);
   doc.text(`Total: R$ ${totalMes.toFixed(2)}`, 14, doc.lastAutoTable.finalY+10);
-  doc.save("planilha_despesas.pdf");
+  doc.save("relatorio_despesas.pdf");
 });
 </script>
 </body>
